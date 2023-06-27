@@ -213,6 +213,8 @@ export class CanvasRenderer extends Renderer {
 
                         if (styles.textDecorationLine.length) {
                             this.ctx.fillStyle = asString(styles.textDecorationColor || styles.color);
+                            // Ratio so that textDecoration can be affected by the font-size. Issue https://github.com/niklasvh/html2canvas/issues/1554
+                            let heightRatio = text.bounds.height ? (text.bounds.height / 20) : 1
                             styles.textDecorationLine.forEach((textDecorationLine) => {
                                 switch (textDecorationLine) {
                                     case TEXT_DECORATION_LINE.UNDERLINE:
@@ -221,9 +223,9 @@ export class CanvasRenderer extends Renderer {
                                         // need to take that into account both in position and size
                                         this.ctx.fillRect(
                                             text.bounds.left,
-                                            Math.round(text.bounds.top + baseline),
+                                            Math.round(text.bounds.top + baseline + (text.bounds.height / 100)),
                                             text.bounds.width,
-                                            1
+                                            heightRatio
                                         );
 
                                         break;
@@ -232,7 +234,7 @@ export class CanvasRenderer extends Renderer {
                                             text.bounds.left,
                                             Math.round(text.bounds.top),
                                             text.bounds.width,
-                                            1
+                                            heightRatio
                                         );
                                         break;
                                     case TEXT_DECORATION_LINE.LINE_THROUGH:
@@ -241,7 +243,7 @@ export class CanvasRenderer extends Renderer {
                                             text.bounds.left,
                                             Math.ceil(text.bounds.top + middle),
                                             text.bounds.width,
-                                            1
+                                            heightRatio
                                         );
                                         break;
                                 }
